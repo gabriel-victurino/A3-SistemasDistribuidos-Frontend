@@ -1,4 +1,4 @@
-# A3 de Sistemas Distribuidos | Front-end
+# A3 de Sistemas Distribuídos | Front-end
 ---
 
 ## ✅ Requisitos do Sistema
