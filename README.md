@@ -68,7 +68,7 @@ Senha: `TrabalhoA3`
 | João Rodrigo Fortkamp Silva  | 10725111602    | [joao-fortkamp06](https://github.com/joao-fortkamp06) |
   
 ---
-
+link para o Backend - https://github.com/gabriel-victurino/A3-SistemasDistribuidos-Backend.git
 ## 💡 Observações Finais
 
 Este projeto é exclusivamente acadêmico, com foco didático em desenvolvimento de sistemas com interface gráfica e banco de dados.  
