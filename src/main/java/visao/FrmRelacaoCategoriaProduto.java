@@ -13,6 +13,7 @@ public class FrmRelacaoCategoriaProduto extends javax.swing.JFrame {
 
     public FrmRelacaoCategoriaProduto() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarDados();
         setLocationRelativeTo(null); // Centraliza a janela
     }

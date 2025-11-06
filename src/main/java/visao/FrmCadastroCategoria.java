@@ -9,6 +9,7 @@ public class FrmCadastroCategoria extends javax.swing.JFrame {
 
     public FrmCadastroCategoria() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")

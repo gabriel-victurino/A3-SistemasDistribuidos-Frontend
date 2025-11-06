@@ -23,6 +23,7 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
     
     public FrmCadastroProduto() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarCategorias();
     }
     

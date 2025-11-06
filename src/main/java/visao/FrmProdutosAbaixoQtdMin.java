@@ -16,6 +16,7 @@ public class FrmProdutosAbaixoQtdMin extends javax.swing.JFrame {
 
     public FrmProdutosAbaixoQtdMin() {
         initComponents();
+        setLocationRelativeTo(null);
         produtoDAO = new ProdutoDAO();
         carregarProdutosAbaixoMinimo();
     }

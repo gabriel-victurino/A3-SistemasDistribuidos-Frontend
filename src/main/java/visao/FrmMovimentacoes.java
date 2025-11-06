@@ -13,6 +13,7 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
 
     public FrmMovimentacoes() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarProdutos();
         
         JCBproduto.addActionListener(new java.awt.event.ActionListener() {

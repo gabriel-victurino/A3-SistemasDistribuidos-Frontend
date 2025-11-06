@@ -13,6 +13,7 @@ public class FrmEditarProduto extends javax.swing.JFrame {
 
     public FrmEditarProduto() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarTabelaProdutos();
         carregarCategorias();
         JTableProdutos.addMouseListener(new java.awt.event.MouseAdapter() {

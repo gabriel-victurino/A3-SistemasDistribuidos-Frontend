@@ -19,6 +19,7 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     
     public FrmEditarMovimentacoes() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarProdutos();
         listarMovimentacoes();
         JTFproduto.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {

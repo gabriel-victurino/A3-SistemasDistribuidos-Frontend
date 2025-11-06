@@ -12,6 +12,7 @@ public class FrmProdutosAcimaQtdMax extends javax.swing.JFrame {
 
     public FrmProdutosAcimaQtdMax() {
         initComponents();
+        setLocationRelativeTo(null);
         produtoDAO = new ProdutoDAO();
         carregarProdutosAcimaMaximo();
     }

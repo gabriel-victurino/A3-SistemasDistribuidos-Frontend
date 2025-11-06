@@ -18,6 +18,7 @@ public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
 
     public FrmBalancoFisicoFinanceiro() {
         initComponents();
+        setLocationRelativeTo(null);
         adicionarComponentesDinamicamente();
         carregarDados();
         this.setLocationRelativeTo(null);

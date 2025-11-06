@@ -7,6 +7,7 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
 
     public FrmRelatoriosGerenciais() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
 
@@ -18,8 +19,8 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
         JBprodutosAcimaQntMax = new javax.swing.JButton();
         JBlistaPrecos = new javax.swing.JButton();
         JBprodutosAbaixoQntMin = new javax.swing.JButton();
-        JBrelacaoCategoriaProduto = new javax.swing.JButton();
-        JBvoltar = new javax.swing.JButton();
+        JBVoltar = new javax.swing.JButton();
+        JBRelacaoCategoriaProduto1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Relatórios Gerenciais");
@@ -56,19 +57,20 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
             }
         });
 
-        JBrelacaoCategoriaProduto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        JBrelacaoCategoriaProduto.setText("Relação Categoria/Produto");
-        JBrelacaoCategoriaProduto.addActionListener(new java.awt.event.ActionListener() {
+        JBVoltar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        JBVoltar.setText("Voltar");
+        JBVoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JBrelacaoCategoriaProdutoActionPerformed(evt);
+                JBVoltarActionPerformed(evt);
             }
         });
 
-        JBvoltar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        JBvoltar.setText("Voltar");
-        JBvoltar.addActionListener(new java.awt.event.ActionListener() {
+        JBRelacaoCategoriaProduto1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        JBRelacaoCategoriaProduto1.setText("Relação Categoria/Produto");
+        JBRelacaoCategoriaProduto1.setActionCommand("Relação Categoria/Produto");
+        JBRelacaoCategoriaProduto1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JBvoltarActionPerformed(evt);
+                JBRelacaoCategoriaProduto1ActionPerformed(evt);
             }
         });
 
@@ -79,7 +81,7 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(JBvoltar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JBRelacaoCategoriaProduto1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(JBbalancoFisicoFinanceiro, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                     .addComponent(JBlistaPrecos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -89,7 +91,7 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
                             .addComponent(JBprodutosAcimaQntMax)
                             .addComponent(JBprodutosAbaixoQntMin))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(JBrelacaoCategoriaProduto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JBVoltar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -105,8 +107,8 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
                     .addComponent(JBlistaPrecos, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(JBrelacaoCategoriaProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(JBvoltar, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                    .addComponent(JBVoltar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JBRelacaoCategoriaProduto1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -118,9 +120,10 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
         balanco.setVisible(true);
     }//GEN-LAST:event_JBbalancoFisicoFinanceiroActionPerformed
 
-    private void JBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBvoltarActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_JBvoltarActionPerformed
+    private void JBRelacaoCategoriaProduto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBRelacaoCategoriaProduto1ActionPerformed
+        FrmRelacaoCategoriaProduto relatorio = new FrmRelacaoCategoriaProduto();
+        relatorio.setVisible(true);
+    }//GEN-LAST:event_JBRelacaoCategoriaProduto1ActionPerformed
 
     private void JBprodutosAbaixoQntMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBprodutosAbaixoQntMinActionPerformed
         FrmProdutosAbaixoQtdMin relatorioMinimo = new FrmProdutosAbaixoQtdMin();
@@ -133,10 +136,9 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
     }//GEN-LAST:event_JBprodutosAcimaQntMaxActionPerformed
     
     
-    private void JBrelacaoCategoriaProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBrelacaoCategoriaProdutoActionPerformed
-         FrmRelacaoCategoriaProduto relatorio = new FrmRelacaoCategoriaProduto();
-        relatorio.setVisible(true);
-    }//GEN-LAST:event_JBrelacaoCategoriaProdutoActionPerformed
+    private void JBVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBVoltarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_JBVoltarActionPerformed
 
     private void JBlistaPrecosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBlistaPrecosActionPerformed
          FrmListaDePreços listaPrecos = new FrmListaDePreços();
@@ -179,11 +181,11 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton JBRelacaoCategoriaProduto1;
+    private javax.swing.JButton JBVoltar;
     private javax.swing.JButton JBbalancoFisicoFinanceiro;
     private javax.swing.JButton JBlistaPrecos;
     private javax.swing.JButton JBprodutosAbaixoQntMin;
     private javax.swing.JButton JBprodutosAcimaQntMax;
-    private javax.swing.JButton JBrelacaoCategoriaProduto;
-    private javax.swing.JButton JBvoltar;
     // End of variables declaration//GEN-END:variables
 }

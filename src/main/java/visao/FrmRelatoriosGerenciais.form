@@ -27,7 +27,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="JBvoltar" max="32767" attributes="0"/>
+                  <Component id="JBRelacaoCategoriaProduto1" max="32767" attributes="0"/>
                   <Component id="JBbalancoFisicoFinanceiro" pref="287" max="32767" attributes="0"/>
                   <Component id="JBlistaPrecos" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -40,7 +40,7 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="JBrelacaoCategoriaProduto" alignment="1" min="-2" pref="287" max="-2" attributes="0"/>
+                  <Component id="JBVoltar" alignment="1" min="-2" pref="287" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -61,8 +61,8 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="JBrelacaoCategoriaProduto" max="32767" attributes="0"/>
-                  <Component id="JBvoltar" pref="155" max="32767" attributes="0"/>
+                  <Component id="JBVoltar" max="32767" attributes="0"/>
+                  <Component id="JBRelacaoCategoriaProduto1" pref="155" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -114,18 +114,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JBprodutosAbaixoQntMinActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="JBrelacaoCategoriaProduto">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Segoe UI" size="18" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Rela&#xe7;&#xe3;o Categoria/Produto"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JBrelacaoCategoriaProdutoActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="JBvoltar">
+    <Component class="javax.swing.JButton" name="JBVoltar">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="1"/>
@@ -133,7 +122,19 @@
         <Property name="text" type="java.lang.String" value="Voltar"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JBvoltarActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JBVoltarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="JBRelacaoCategoriaProduto1">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Rela&#xe7;&#xe3;o Categoria/Produto"/>
+        <Property name="actionCommand" type="java.lang.String" value="Rela&#xe7;&#xe3;o Categoria/Produto"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JBRelacaoCategoriaProduto1ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

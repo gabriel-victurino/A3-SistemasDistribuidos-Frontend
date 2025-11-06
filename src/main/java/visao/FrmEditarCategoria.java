@@ -11,6 +11,7 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
 
     public FrmEditarCategoria() {
         initComponents();
+        setLocationRelativeTo(null);
         listarCategorias();
     }
     

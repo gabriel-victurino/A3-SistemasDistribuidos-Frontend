@@ -9,6 +9,7 @@ public class FrmListaDePreços extends javax.swing.JFrame {
 
     public FrmListaDePreços() {
         initComponents();
+        setLocationRelativeTo(null);
         carregarProdutos();
         setLocationRelativeTo(null); 
     }
