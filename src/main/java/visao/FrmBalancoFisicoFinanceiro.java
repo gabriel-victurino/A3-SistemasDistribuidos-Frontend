@@ -1,6 +1,7 @@
 
 package visao;
 
+import dao.ProdutoDAO;
 import modelo.Produto;
 import java.util.ArrayList;
 import java.text.NumberFormat;
@@ -133,8 +134,8 @@ public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     model.setRowCount(0); // Limpa a tabela
     
-    Produto produto = new Produto();
-    ArrayList<Produto> listaProdutos = produto.getMinhaLista();
+    ProdutoDAO produtoDAO = new ProdutoDAO();
+    ArrayList<Produto> listaProdutos = produtoDAO.getMinhaLista();
     
     // Ordena a lista por nome (ordem alfabética)
     listaProdutos.sort((p1, p2) -> p1.getNome().compareToIgnoreCase(p2.getNome()));

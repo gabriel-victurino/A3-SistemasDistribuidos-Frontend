@@ -2,6 +2,7 @@ package visao;
 
 import javax.swing.*;
 import dao.CategoriaDAO;
+import dao.ProdutoDAO;
 import java.util.ArrayList;
 import modelo.Categoria;
 import modelo.Produto;
@@ -222,16 +223,25 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Preencha todos os campos corretamente.");
                 return;
             }
-
+            try {
             Produto produto = new Produto();
-            boolean sucesso = produto.insertProdutoBD(nome, precoUnitario, unidade,
-                    quantidadeEstoque, quantidadeMin, quantidadeMax, categoriaId);
+            produto.setNome(nome);
+            produto.setPrecoUnitario(precoUnitario);
+            produto.setUnidade(unidade);
+            produto.setQuantidadeEstoque(quantidadeEstoque);
+            produto.setQuantidadeMin(quantidadeMin);
+            produto.setQuantidadeMax(quantidadeMax);
+            produto.setCategoriaId(categoriaId);
 
-            if (sucesso) {
-                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+            ProdutoDAO produtoDAO = new ProdutoDAO();
+            produtoDAO.insertProdutoBD(produto);
+
+
+            JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
                 limparCampos();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto: " + e.getMessage());
+                e.printStackTrace();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Valores numéricos inválidos: " + e.getMessage());

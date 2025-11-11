@@ -1,6 +1,7 @@
 
 package visao;
 
+import dao.ProdutoDAO;
 import modelo.Produto;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ public class FrmListaDePreços extends javax.swing.JFrame {
     }
 
     private void carregarProdutos() {        
-        Produto produto = new Produto();
-        ArrayList<Produto> listaProdutos = produto.getMinhaLista();
+        ProdutoDAO produtodao = new ProdutoDAO();
+        ArrayList<Produto> listaProdutos = produtodao.getMinhaLista();
         
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         modelo.setNumRows(0); 
