@@ -1,7 +1,5 @@
 package modelo;
 
-import java.util.ArrayList;
-
 /**
  * Classe que representa um Produto.
  */
@@ -24,7 +22,7 @@ public class Produto {
     }
 
     public Produto(int id, String nome, double precoUnitario, String unidade,
-                   int quantidadeEstoque, int quantidadeMin, int quantidadeMax, int categoriaId) {
+            int quantidadeEstoque, int quantidadeMin, int quantidadeMax, int categoriaId) {
         this.id = id;
         this.nome = nome;
         this.precoUnitario = precoUnitario;
@@ -36,7 +34,6 @@ public class Produto {
     }
 
     // Métodos GET e SET
-
     public int getId() {
         return id;
     }
@@ -44,7 +41,7 @@ public class Produto {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getNome() {
         return nome;
     }
@@ -52,7 +49,7 @@ public class Produto {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
+
     public double getPrecoUnitario() {
         return precoUnitario;
     }
@@ -60,7 +57,7 @@ public class Produto {
     public void setPrecoUnitario(double precoUnitario) {
         this.precoUnitario = precoUnitario;
     }
-    
+
     public String getUnidade() {
         return unidade;
     }
@@ -68,7 +65,7 @@ public class Produto {
     public void setUnidade(String unidade) {
         this.unidade = unidade;
     }
-    
+
     public int getQuantidadeEstoque() {
         return quantidadeEstoque;
     }
@@ -76,7 +73,7 @@ public class Produto {
     public void setQuantidadeEstoque(int quantidadeEstoque) {
         this.quantidadeEstoque = quantidadeEstoque;
     }
-    
+
     public int getQuantidadeMin() {
         return quantidadeMin;
     }
@@ -84,7 +81,7 @@ public class Produto {
     public void setQuantidadeMin(int quantidadeMin) {
         this.quantidadeMin = quantidadeMin;
     }
-    
+
     public int getQuantidadeMax() {
         return quantidadeMax;
     }
@@ -92,7 +89,7 @@ public class Produto {
     public void setQuantidadeMax(int quantidadeMax) {
         this.quantidadeMax = quantidadeMax;
     }
-    
+
     public int getCategoriaId() {
         return categoriaId;
     }

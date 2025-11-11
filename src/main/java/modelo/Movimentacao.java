@@ -70,9 +70,4 @@ public class Movimentacao {
         this.produtoId = produtoId;
     }
 
-    /**
-     * Retorna os dados da movimentação em uma string.
-     *
-     * @return Uma string com os dados da movimentação.
-     */
 }
