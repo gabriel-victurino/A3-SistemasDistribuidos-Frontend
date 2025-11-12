@@ -1,8 +1,7 @@
-
 package visao;
 
-import dao.ProdutoDAO;
 import modelo.Produto;
+import cliente.ConexaoRMI;
 import java.util.ArrayList;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -11,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.Box;
 import java.awt.BorderLayout;
 import javax.swing.SwingUtilities;
+import servicos.ServicoProduto;
 
 public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
 
@@ -28,14 +28,13 @@ public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
     private void adicionarComponentesDinamicamente() {
         lblTotalEstoque = new JLabel("Total do Estoque: R$ 0,00");
         lblTotalEstoque.setFont(new java.awt.Font("Dialog", 1, 14));
-        
+
         // Adiciona espaço e o label abaixo dos botões
         getContentPane().add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
         getContentPane().add(lblTotalEstoque, BorderLayout.SOUTH);
-        
+
         this.setSize(this.getWidth(), this.getHeight() + 30);
     }
-
 
     // Método main para executar a janela
     public static void main(String args[]) {
@@ -43,6 +42,7 @@ public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
             new FrmBalancoFisicoFinanceiro().setVisible(true);
         });
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -131,33 +131,37 @@ public class FrmBalancoFisicoFinanceiro extends javax.swing.JFrame {
     }//GEN-LAST:event_JBalterarActionPerformed
 
     private void carregarDados() {
-    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-    model.setRowCount(0); // Limpa a tabela
-    
-    ProdutoDAO produtoDAO = new ProdutoDAO();
-    ArrayList<Produto> listaProdutos = produtoDAO.getMinhaLista();
-    
-    // Ordena a lista por nome (ordem alfabética)
-    listaProdutos.sort((p1, p2) -> p1.getNome().compareToIgnoreCase(p2.getNome()));
-    
-    double totalEstoque = 0.0;
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // Limpa a tabela
 
-    for (Produto p : listaProdutos) {
-        double valorTotal = p.getPrecoUnitario() * p.getQuantidadeEstoque();
-        totalEstoque += valorTotal;
-        
-        model.addRow(new Object[]{
-            p.getNome(),
-            p.getUnidade(),
-            p.getQuantidadeEstoque(),
-            currencyFormat.format(p.getPrecoUnitario()),
-            currencyFormat.format(valorTotal)
-        });
+        try {
+            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+            ArrayList<Produto> listaProdutos = servicoProduto.listarProdutos();
+
+            // Ordena a lista por nome (ordem alfabética)
+            listaProdutos.sort((p1, p2) -> p1.getNome().compareToIgnoreCase(p2.getNome()));
+
+            double totalEstoque = 0.0;
+
+            for (Produto p : listaProdutos) {
+                double valorTotal = p.getPrecoUnitario() * p.getQuantidadeEstoque();
+                totalEstoque += valorTotal;
+
+                model.addRow(new Object[]{
+                    p.getNome(),
+                    p.getUnidade(),
+                    p.getQuantidadeEstoque(),
+                    currencyFormat.format(p.getPrecoUnitario()),
+                    currencyFormat.format(valorTotal)
+                });
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Erro ao carregar produtos do servidor RMI:\n" + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
-    
-    
-}
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JBalterar;
     private javax.swing.JButton JBfechar;

@@ -1,7 +1,6 @@
 package visao;
 
-import dao.MovimentacaoDAO;
-import dao.ProdutoDAO;
+import cliente.ConexaoRMI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Movimentacao;
 import modelo.Produto;
+import servicos.ServicoMovimentacao;
+import servicos.ServicoProduto;
 
 public class FrmEditarMovimentacoes extends javax.swing.JFrame {
 
@@ -41,25 +42,29 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     }
     
     private void listarMovimentacoes() {
-        MovimentacaoDAO movimentacaoDAO = new MovimentacaoDAO();
-        ProdutoDAO produtoDAO = new ProdutoDAO();
+        ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
 
         DefaultTableModel model = (DefaultTableModel) JTableMovimentacoes.getModel();
         model.setRowCount(0); // Limpa a tabela
 
-        ArrayList<Movimentacao> lista = movimentacaoDAO.getMinhaLista();
+        ArrayList<Movimentacao> lista = servicoMovimentacao.listarMovimentacoes();
 
         for (Movimentacao mov : lista) {
-            Produto produto = produtoDAO.carregaProduto(mov.getProdutoId());
-            String nomeProduto = (produto != null) ? produto.getNome() : "Desconhecido";
+            try {
+                Produto produto = servicoProduto.buscarPorId(mov.getProdutoId());
+                String nomeProduto = (produto != null) ? produto.getNome() : "Desconhecido";
 
-            model.addRow(new Object[]{
+                model.addRow(new Object[]{
                 mov.getId(),
                 mov.getTipo(),
                 mov.getDataMovimentacao(),
                 mov.getQuantidade(),
                 nomeProduto
             });
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+            }
         }
     }
     
@@ -392,8 +397,8 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
             int quantidadeNova = Integer.parseInt(JTFquantidade.getText());
 
             String nomeProduto = JTFproduto.getText();
-            ProdutoDAO produtoDAO = new ProdutoDAO();
-            Produto produto = produtoDAO.getProdutoPorNome(nomeProduto);
+            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+            Produto produto = servicoProduto.buscarPorNome(nomeProduto);
 
             if (produto == null) {
                 JOptionPane.showMessageDialog(this, "Produto não encontrado.");
@@ -449,7 +454,7 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
 
             // Atualiza estoque no banco
             produto.setQuantidadeEstoque(estoqueAtual);
-            produtoDAO.updateProdutoBD(produto);
+            servicoProduto.atualizarProduto(produto);
 
             JOptionPane.showMessageDialog(this, "Movimentação e estoque atualizados com sucesso.");
             listarMovimentacoes();

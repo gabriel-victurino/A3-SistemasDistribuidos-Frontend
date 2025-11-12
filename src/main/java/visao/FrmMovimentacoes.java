@@ -1,11 +1,13 @@
 package visao;
 
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import modelo.Movimentacao;
-import dao.MovimentacaoDAO;
 import modelo.Produto;
-import dao.ProdutoDAO;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import servicos.ServicoMovimentacao;
+import servicos.ServicoProduto;
 
 public class FrmMovimentacoes extends javax.swing.JFrame {
     
@@ -36,11 +38,15 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
     }
     
     private void carregarProdutos() {
-        ProdutoDAO dao = new ProdutoDAO();
-        listaProdutos = dao.getMinhaLista();  // Armazena a lista para uso posterior
-        JCBproduto.removeAllItems();
-        for (Produto p : listaProdutos) {
-            JCBproduto.addItem(p.getNome());
+        try {
+            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+            listaProdutos = servicoProduto.listarProdutos();  // Armazena a lista para uso posterior
+            JCBproduto.removeAllItems();
+            for (Produto p : listaProdutos) {
+                JCBproduto.addItem(p.getNome());
+        }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar produtos:" + e.getMessage());
         }
     }
     
@@ -231,8 +237,8 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
             int produtoId = produtoSelecionado.getId();
 
             // Carrega dados atualizados do produto do banco
-            ProdutoDAO produtoDAO = new ProdutoDAO();
-            Produto produtoAtual = produtoDAO.carregaProduto(produtoId);
+            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+            Produto produtoAtual = servicoProduto.buscarPorId(produtoId);
 
             int estoqueAtual = produtoAtual.getQuantidadeEstoque();
             int novoEstoque;
@@ -270,12 +276,12 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
             mov.setQuantidade(quantidade);
             mov.setProdutoId(produtoId);
 
-            MovimentacaoDAO dao = new MovimentacaoDAO();
-            dao.insertMovimentacaoBD(mov);
+            ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
+            servicoMovimentacao.inserirMovimentacao(mov);
 
             // Atualiza o estoque no banco
             produtoAtual.setQuantidadeEstoque(novoEstoque);
-            produtoDAO.updateProdutoBD(produtoAtual);
+            servicoProduto.atualizarProduto(produtoAtual);
 
             JOptionPane.showMessageDialog(null, "Movimentação registrada e estoque atualizado com sucesso!");
 

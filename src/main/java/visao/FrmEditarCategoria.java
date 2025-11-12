@@ -1,10 +1,11 @@
 package visao;
 
-import dao.CategoriaDAO;
+import cliente.ConexaoRMI;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
+import servicos.ServicoCategoria;
 
 
 public class FrmEditarCategoria extends javax.swing.JFrame {
@@ -208,16 +209,16 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
             try {
                 int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
 
-                CategoriaDAO categoriaDAO = new CategoriaDAO();
+                ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
 
                 // 1. Garantir que "Sem Categoria" existe
-                int idSemCategoria = categoriaDAO.getOuCriaCategoriaPadrao();
+                int idSemCategoria = servicocategoria.getOuCriaCategoriaPadrao();
 
                 // 2. Atualizar os produtos para usarem a nova categoria
                 categoriaDAO.atualizarProdutosParaNovaCategoria(idCategoria, idSemCategoria);
 
                 // 3. Apagar a categoria
-                categoriaDAO.deleteCategoriaBD(idCategoria);
+                servicocategoria.deletarCategoria(idCategoria);
 
                 JOptionPane.showMessageDialog(this, "Categoria removida com sucesso! Produtos foram movidos para 'Sem Categoria'.");
 
@@ -267,8 +268,8 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
             categoria.setTamanho(tamanho);
             categoria.setEmbalagem(embalagem);
 
-            CategoriaDAO dao = new CategoriaDAO();
-            dao.updateCategoriaBD(categoria);
+            ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+            servicoCategoria.atualizarCategoria(categoria);
 
             JOptionPane.showMessageDialog(this, "Categoria atualizada com sucesso!");
 

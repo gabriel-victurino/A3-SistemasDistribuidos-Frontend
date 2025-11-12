@@ -1,10 +1,12 @@
-
 package visao;
 
-import dao.ProdutoDAO;
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import modelo.Produto;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import servicos.ServicoProduto;
 
 public class FrmListaDePreços extends javax.swing.JFrame {
 
@@ -16,19 +18,23 @@ public class FrmListaDePreços extends javax.swing.JFrame {
     }
 
     private void carregarProdutos() {        
-        ProdutoDAO produtodao = new ProdutoDAO();
-        ArrayList<Produto> listaProdutos = produtodao.getMinhaLista();
+        try {
+            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+            ArrayList<Produto> listaProdutos = servicoProduto.listarProdutos();
         
-        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
-        modelo.setNumRows(0); 
+            DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+            modelo.setNumRows(0); 
         
-        for (Produto p : listaProdutos) {
-            modelo.addRow(new Object[]{
-                p.getNome(),
-                String.format("R$ %.2f", p.getPrecoUnitario()),
-                p.getUnidade(),
-                p.getCategoriaId() 
+            for (Produto p : listaProdutos) {
+                modelo.addRow(new Object[]{
+                    p.getNome(),
+                    String.format("R$ %.2f", p.getPrecoUnitario()),
+                    p.getUnidade(),
+                    p.getCategoriaId() 
             });
+            }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar os produtos: " + e.getMessage());
         }
         
         

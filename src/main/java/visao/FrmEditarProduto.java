@@ -1,13 +1,15 @@
 package visao;
 
-import dao.CategoriaDAO;
-import dao.MovimentacaoDAO;
-import dao.ProdutoDAO;
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 import modelo.Produto;
+import servicos.ServicoCategoria;
+import servicos.ServicoMovimentacao;
+import servicos.ServicoProduto;
 
 public class FrmEditarProduto extends javax.swing.JFrame {
 
@@ -23,59 +25,70 @@ public class FrmEditarProduto extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void carregarTabelaProdutos() {
         DefaultTableModel modelo = (DefaultTableModel) JTableProdutos.getModel();
         modelo.setRowCount(0); // limpa a tabela
 
-        ProdutoDAO dao = new ProdutoDAO();
-        CategoriaDAO categoriaDAO = new CategoriaDAO();
-
-        for (Produto p : dao.getMinhaLista()) {
-            String nomeCategoria = "Desconhecida";
-            try {
-                Categoria c = categoriaDAO.carregaCategoria(p.getCategoriaId());
-                if (c != null) {
-                    nomeCategoria = c.getNome();
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+        ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+        try {
+            for (Produto p : servicoProduto.listarProdutos()) {
+                String nomeCategoria = "Desconhecida";
+                try {
+                    Categoria c = servicoCategoria.buscarCategoria(p.getCategoriaId());
+                    if (c != null) {
+                        nomeCategoria = c.getNome();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            modelo.addRow(new Object[]{
-                p.getId(),
-                p.getNome(),
-                p.getPrecoUnitario(),
-                p.getUnidade(),
-                p.getQuantidadeEstoque(),
-                p.getQuantidadeMin(),
-                p.getQuantidadeMax(),
-                nomeCategoria
-            });
+                modelo.addRow(new Object[]{
+                    p.getId(),
+                    p.getNome(),
+                    p.getPrecoUnitario(),
+                    p.getUnidade(),
+                    p.getQuantidadeEstoque(),
+                    p.getQuantidadeMin(),
+                    p.getQuantidadeMax(),
+                    nomeCategoria
+                });
+            }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar produtos: " + e.getMessage());
         }
     }
-    
+
     private void carregarCategorias() {
-        JCBcategoria.removeAllItems(); // Limpa itens antigos
-        CategoriaDAO dao = new CategoriaDAO();
-        ArrayList<Categoria> lista = dao.getMinhaLista();
+        try {
+            JCBcategoria.removeAllItems(); // Limpa itens antigos
+            ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+            ArrayList<Categoria> lista = servicoCategoria.listarCategorias();
 
-        for (Categoria cat : lista) {
-            JCBcategoria.addItem(cat.getNome()); // Adiciona o nome à ComboBox
+            for (Categoria cat : lista) {
+                JCBcategoria.addItem(cat.getNome()); // Adiciona o nome à ComboBox
+            }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar categorias: " + e.getMessage());
         }
     }
-    
+
     private int obterIdCategoriaPorNome(String nomeCategoria) {
-        CategoriaDAO dao = new CategoriaDAO();
-        ArrayList<Categoria> lista = dao.getMinhaLista();
-        for (Categoria cat : lista) {
-            if (cat.getNome().equals(nomeCategoria)) {
-                return cat.getIdCategoria();
+        try {
+            ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+            ArrayList<Categoria> lista = servicoCategoria.listarCategorias();
+            for (Categoria cat : lista) {
+                if (cat.getNome().equals(nomeCategoria)) {
+                    return cat.getIdCategoria();
+                }
             }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar categorias: " + e.getMessage());
         }
         return -1; // Não encontrado
     }
-    
+
     private void limparCampos() {
         JTFnome.setText("");
         JTFpreco.setText("");
@@ -288,42 +301,46 @@ public class FrmEditarProduto extends javax.swing.JFrame {
         if (selectedRow != -1) {
             int idProduto = Integer.parseInt(JTableProdutos.getValueAt(selectedRow, 0).toString());
 
-            MovimentacaoDAO movDao = new MovimentacaoDAO();
-            boolean possuiMov = movDao.possuiMovimentacoes(idProduto);
+            try {
+                ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
+                boolean possuiMov = servicoMovimentacao.deletarMovimentacao(idProduto);
 
-            int confirm;
+                int confirm;
 
-            if (possuiMov) {
-                confirm = JOptionPane.showConfirmDialog(this,
-                    "Este produto está associado a movimentações.\nDeseja apagar o produto e todas as movimentações relacionadas?",
-                    "Confirmar exclusão em cascata",
-                    JOptionPane.YES_NO_OPTION);
-            } else {
-                confirm = JOptionPane.showConfirmDialog(this,
-                    "Tem certeza que deseja apagar este produto?",
-                    "Confirmar exclusão",
-                    JOptionPane.YES_NO_OPTION);
-            }
-
-            if (confirm == JOptionPane.YES_OPTION) {
                 if (possuiMov) {
-                    movDao.deleteMovimentacoesProdutoBD(idProduto);
-                }
-
-                ProdutoDAO dao = new ProdutoDAO();
-                boolean sucesso = dao.deleteProdutoBD(idProduto);
-
-                if (sucesso) {
-                    JOptionPane.showMessageDialog(this, "Produto apagado com sucesso" +
-                        (possuiMov ? " (e movimentações relacionadas)." : "."));
-                    carregarTabelaProdutos();
-                    limparCampos();
+                    confirm = JOptionPane.showConfirmDialog(this,
+                            "Este produto está associado a movimentações.\nDeseja apagar o produto e todas as movimentações relacionadas?",
+                            "Confirmar exclusão em cascata",
+                            JOptionPane.YES_NO_OPTION);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao apagar o produto.");
+                    confirm = JOptionPane.showConfirmDialog(this,
+                            "Tem certeza que deseja apagar este produto?",
+                            "Confirmar exclusão",
+                            JOptionPane.YES_NO_OPTION);
                 }
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    if (possuiMov) {
+                        servicoMovimentacao.deletarMovimentacao(idProduto);
+
+                        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+                        boolean sucesso = servicoProduto.deletarProduto(idProduto);
+
+                        if (sucesso) {
+                            JOptionPane.showMessageDialog(this, "Produto apagado com sucesso"
+                                    + (possuiMov ? " (e movimentações relacionadas)." : "."));
+                            carregarTabelaProdutos();
+                            limparCampos();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Erro ao apagar o produto.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Selecione um produto para apagar.");
+                    }
+                }
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao deletar movimentacao" + e.getMessage());
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Selecione um produto para apagar.");
         }
     }//GEN-LAST:event_JBapagarActionPerformed
 
@@ -336,10 +353,10 @@ public class FrmEditarProduto extends javax.swing.JFrame {
         if (linha != -1) {
             // Mensagem de confirmação
             int resposta = JOptionPane.showConfirmDialog(
-                this,
-                "Ao alterar este produto, todas as movimentações ligadas a ele podem mudar.\nDeseja continuar?",
-                "Confirmar Alteração",
-                JOptionPane.YES_NO_OPTION
+                    this,
+                    "Ao alterar este produto, todas as movimentações ligadas a ele podem mudar.\nDeseja continuar?",
+                    "Confirmar Alteração",
+                    JOptionPane.YES_NO_OPTION
             );
 
             if (resposta == JOptionPane.YES_OPTION) {
@@ -358,8 +375,8 @@ public class FrmEditarProduto extends javax.swing.JFrame {
 
                     Produto produto = new Produto(idProduto, nome, preco, unidade, qntEstoque, qntMin, qntMax, categoriaId);
 
-                    ProdutoDAO produtoDAO = new ProdutoDAO();
-                    boolean sucesso = produtoDAO.updateProdutoBD(produto);
+                    ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+                    boolean sucesso = servicoProduto.atualizarProduto(produto);
 
                     if (sucesso) {
                         JOptionPane.showMessageDialog(this, "Produto alterado com sucesso!");

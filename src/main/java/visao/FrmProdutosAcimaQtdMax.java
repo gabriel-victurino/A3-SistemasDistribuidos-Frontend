@@ -1,25 +1,27 @@
 package visao;
 
-import dao.ProdutoDAO;
+
+import cliente.ConexaoRMI;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Produto;
+import servicos.ServicoProduto;
 
 public class FrmProdutosAcimaQtdMax extends javax.swing.JFrame {
 
-    private final ProdutoDAO produtoDAO;
+    private final ServicoProduto servicoProduto;
 
     public FrmProdutosAcimaQtdMax() {
         initComponents();
         setLocationRelativeTo(null);
-        produtoDAO = new ProdutoDAO();
+        servicoProduto = ConexaoRMI.getServicoProduto();
         carregarProdutosAcimaMaximo();
     }
 
     private void carregarProdutosAcimaMaximo() {
         try {
-            ArrayList<Produto> listaProdutos = produtoDAO.getMinhaLista();
+            ArrayList<Produto> listaProdutos = servicoProduto.listarProdutos();
             DefaultTableModel model = (DefaultTableModel) jTableProdutosAcima.getModel();
             model.setRowCount(0); // Limpa a tabela
 

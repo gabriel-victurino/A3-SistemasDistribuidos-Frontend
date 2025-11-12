@@ -1,9 +1,11 @@
 package visao;
 
 import javax.swing.JOptionPane;
-import dao.CategoriaDAO;
 import java.awt.HeadlessException;
 import modelo.Categoria;
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
+import servicos.ServicoCategoria;
 
 public class FrmCadastroCategoria extends javax.swing.JFrame {
 
@@ -130,8 +132,7 @@ public class FrmCadastroCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_JBvoltarActionPerformed
 
     private void JBcasdastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBcasdastrarActionPerformed
-        try {
-            // Captura os valores dos campos
+           // Captura os valores dos campos
             String nome = JTFnome.getText().trim();
             String tamanho = (String) JCBtamanho.getSelectedItem();
             String embalagem = (String) JCBembalagem.getSelectedItem();
@@ -148,20 +149,20 @@ public class FrmCadastroCategoria extends javax.swing.JFrame {
             categoria.setTamanho(tamanho);
             categoria.setEmbalagem(embalagem);
 
-            // Salva no banco de dados
-            CategoriaDAO dao = new CategoriaDAO();
-            dao.insertCategoriaBD(categoria);
+            try {
+                // Salva no banco de dados
+                ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
+                servicocategoria.inserirCategoria(categoria);
+                JOptionPane.showMessageDialog(this, "Categoria cadastrada com sucesso!");
 
-            JOptionPane.showMessageDialog(this, "Categoria cadastrada com sucesso!");
+                // Limpa campos após cadastro
+                JTFnome.setText("");
+                JCBtamanho.setSelectedIndex(0);
+                JCBembalagem.setSelectedIndex(0);
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar categoria: " + e.getMessage());
+            }
 
-            // Limpa campos após cadastro
-            JTFnome.setText("");
-            JCBtamanho.setSelectedIndex(0);
-            JCBembalagem.setSelectedIndex(0);
-
-        } catch (HeadlessException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao cadastrar categoria: " + e.getMessage());
-        }
     }//GEN-LAST:event_JBcasdastrarActionPerformed
 
     /**

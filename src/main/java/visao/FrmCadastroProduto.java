@@ -1,18 +1,20 @@
 package visao;
 
 import javax.swing.*;
-import dao.CategoriaDAO;
-import dao.ProdutoDAO;
 import java.util.ArrayList;
 import modelo.Categoria;
 import modelo.Produto;
+import servicos.ServicoCategoria;
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
+import servicos.ServicoProduto;
 
 public class FrmCadastroProduto extends javax.swing.JFrame {
 
     private void carregarCategorias() {
         try {
-            CategoriaDAO dao = new CategoriaDAO();
-            ArrayList<Categoria> lista = dao.getMinhaLista();
+            ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
+            ArrayList<Categoria> lista = servicocategoria.listarCategorias();
             JCBcategoria.removeAllItems(); // Limpa o comboBox
             for (Categoria cat : lista) {
                 JCBcategoria.addItem(cat.getNome());
@@ -21,24 +23,28 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar categorias: " + e.getMessage());
         }
     }
-    
+
     public FrmCadastroProduto() {
         initComponents();
         setLocationRelativeTo(null);
         carregarCategorias();
     }
-    
+
     private int obterIdCategoriaPorNome(String nomeCategoria) {
-        CategoriaDAO dao = new CategoriaDAO();
-        ArrayList<Categoria> lista = dao.getMinhaLista();
-        for (Categoria cat : lista) {
-            if (cat.getNome().equals(nomeCategoria)) {
-                return cat.getIdCategoria();
+        try {
+            ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
+            ArrayList<Categoria> lista = servicocategoria.listarCategorias();
+            for (Categoria cat : lista) {
+                if (cat.getNome().equals(nomeCategoria)) {
+                    return cat.getIdCategoria();
+                }
             }
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar categorias: " + e.getMessage());
         }
         return -1; // Não encontrado
     }
-    
+
     private void limparCampos() {
         JTFnome.setText("");
         JTFprecoUnitario.setText("");
@@ -48,7 +54,6 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
         JTFquantidadeMaxEstoque.setText("");
         JCBcategoria.setSelectedIndex(0);
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -224,20 +229,18 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
                 return;
             }
             try {
-            Produto produto = new Produto();
-            produto.setNome(nome);
-            produto.setPrecoUnitario(precoUnitario);
-            produto.setUnidade(unidade);
-            produto.setQuantidadeEstoque(quantidadeEstoque);
-            produto.setQuantidadeMin(quantidadeMin);
-            produto.setQuantidadeMax(quantidadeMax);
-            produto.setCategoriaId(categoriaId);
+                Produto produto = new Produto();
+                produto.setNome(nome);
+                produto.setPrecoUnitario(precoUnitario);
+                produto.setUnidade(unidade);
+                produto.setQuantidadeEstoque(quantidadeEstoque);
+                produto.setQuantidadeMin(quantidadeMin);
+                produto.setQuantidadeMax(quantidadeMax);
+                produto.setCategoriaId(categoriaId);
 
-            ProdutoDAO produtoDAO = new ProdutoDAO();
-            produtoDAO.insertProdutoBD(produto);
-
-
-            JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+                ServicoProduto servicoproduto = ConexaoRMI.getServicoProduto();
+                servicoproduto.inserirProduto(produto);
+                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
                 limparCampos();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto: " + e.getMessage());

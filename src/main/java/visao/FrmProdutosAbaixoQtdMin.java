@@ -1,29 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package visao;
 
-import dao.ProdutoDAO;
+import cliente.ConexaoRMI;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Produto;
+import servicos.ServicoProduto;
 
 public class FrmProdutosAbaixoQtdMin extends javax.swing.JFrame {
 
-    private final ProdutoDAO produtoDAO;
+    private final ServicoProduto servicoProduto;
 
     public FrmProdutosAbaixoQtdMin() {
         initComponents();
         setLocationRelativeTo(null);
-        produtoDAO = new ProdutoDAO();
+        servicoProduto = ConexaoRMI.getServicoProduto();
         carregarProdutosAbaixoMinimo();
     }
 
     private void carregarProdutosAbaixoMinimo() {
         try {
-            ArrayList<Produto> listaProdutos = produtoDAO.getMinhaLista();
+            ArrayList<Produto> listaProdutos = servicoProduto.listarProdutos();
             DefaultTableModel model = (DefaultTableModel) jTableProdutosAbaixo.getModel();
             model.setRowCount(0); // Limpa a tabela
 
