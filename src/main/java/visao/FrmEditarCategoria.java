@@ -1,12 +1,12 @@
 package visao;
 
 import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 import servicos.ServicoCategoria;
-
 
 public class FrmEditarCategoria extends javax.swing.JFrame {
 
@@ -15,14 +15,14 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         listarCategorias();
     }
-    
+
     private void listarCategorias() {
         try {
             DefaultTableModel modelo = (DefaultTableModel) JTableCategorias.getModel();
             modelo.setRowCount(0);
 
-            CategoriaDAO dao = new CategoriaDAO();
-            ArrayList<Categoria> lista = dao.getMinhaLista();
+            ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+            ArrayList<Categoria> lista = servicoCategoria.listarCategorias();
 
             for (Categoria c : lista) {
                 modelo.addRow(new Object[]{
@@ -37,7 +37,7 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao listar categorias: " + e.getMessage());
         }
     }
-    
+
     private void limparCampos() {
         JTFnome.setText("");
         JCBtamanho.setSelectedIndex(0);
@@ -201,8 +201,8 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
         }
 
         int confirmacao = JOptionPane.showConfirmDialog(this,
-                "Tem certeza que deseja apagar essa categoria?\n" +
-                "Todos os produtos associados serão movidos para a categoria 'Sem Categoria'.",
+                "Tem certeza que deseja apagar essa categoria?\n"
+                + "Todos os produtos associados serão movidos para a categoria 'Sem Categoria'.",
                 "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
 
         if (confirmacao == JOptionPane.YES_OPTION) {
@@ -210,21 +210,14 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
                 int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
 
                 ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
-
-                // 1. Garantir que "Sem Categoria" existe
-                int idSemCategoria = servicocategoria.getOuCriaCategoriaPadrao();
-
-                // 2. Atualizar os produtos para usarem a nova categoria
-                categoriaDAO.atualizarProdutosParaNovaCategoria(idCategoria, idSemCategoria);
-
-                // 3. Apagar a categoria
                 servicocategoria.deletarCategoria(idCategoria);
 
                 JOptionPane.showMessageDialog(this, "Categoria removida com sucesso! Produtos foram movidos para 'Sem Categoria'.");
 
                 listarCategorias();
                 limparCampos();
-
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao comunicar com o servidor: " + e.getMessage());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Erro ao apagar categoria: " + e.getMessage());
             }
@@ -252,10 +245,10 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
 
             // Mensagem de confirmação
             int confirmacao = JOptionPane.showConfirmDialog(
-                this,
-                "Ao alterar esta categoria, todos os produtos associados a ela também terão suas informações de categoria alteradas.\nDeseja realmente continuar?",
-                "Confirmar alteração",
-                JOptionPane.YES_NO_OPTION
+                    this,
+                    "Ao alterar esta categoria, todos os produtos associados a ela também terão suas informações de categoria alteradas.\nDeseja realmente continuar?",
+                    "Confirmar alteração",
+                    JOptionPane.YES_NO_OPTION
             );
 
             if (confirmacao != JOptionPane.YES_OPTION) {
@@ -275,7 +268,7 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
 
             listarCategorias(); // Atualiza a tabela após a alteração
             limparCampos();
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao alterar categoria: " + e.getMessage());
         }
