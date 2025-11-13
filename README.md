@@ -30,13 +30,13 @@ Senha: `TrabalhoA3`
 <details>
   <summary><strong>➖ Não Funcionais</strong></summary>
 
-RNF001 - Arquitetura distribuída com RMI (Remote Method Invocation)
-RNF002 - Persistência de dados em MySQL
-RNF003 - Separação em camadas 
-RNF004 - Comunicação segura e eficiente entre cliente e servidor
-RNF005 - Boas práticas de codificação e documentação
-RNF006 - Controle de versão colaborativo (ex.: Git)
-RNF007 - Interface gráfica responsiva e amigável ao usuário
+- RNF001: Arquitetura distribuída com RMI (Remote Method Invocation)
+- RNF002: Persistência de dados em MySQL
+- RNF003: Separação em camadas 
+- RNF004: Comunicação segura e eficiente entre cliente e servidor
+- RNF005: Boas práticas de codificação e documentação
+- RNF006: Controle de versão colaborativo (ex.: Git)
+- RNF007: Interface gráfica responsiva e amigável ao usuário
 </details>
 
 ---
