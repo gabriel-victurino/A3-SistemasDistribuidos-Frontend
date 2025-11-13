@@ -19,12 +19,12 @@ Senha: `TrabalhoA3`
 <details>
   <summary><strong>➕ Funcionais</strong></summary>
 
-RF001 - Cadastro de produtos (nome, preço, unidade, estoque mínimo/máximo, categoria)
-RF002 - Cadastro de categorias (nome, tamanho, embalagem)
-RF003 - Movimentação de estoque (entrada e saída)
-RF004 - Alertas automáticos de estoque (abaixo do mínimo ou acima do máximo)
-RF005 - Geração de relatórios e balanços físicos/financeiros
-RF006 - Interface gráfica para interação com o sistema
+- RF001: Cadastro de produtos (nome, preço, unidade, estoque mínimo/máximo, categoria)
+- RF002: Cadastro de categorias (nome, tamanho, embalagem)
+- RF003: Movimentação de estoque (entrada e saída)
+- RF004: Alertas automáticos de estoque (abaixo do mínimo ou acima do máximo)
+- RF005: Geração de relatórios e balanços físicos/financeiros
+- RF006: Interface gráfica para interação com o sistema
 </details>
 
 <details>
