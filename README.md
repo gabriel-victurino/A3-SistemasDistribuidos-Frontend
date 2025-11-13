@@ -19,23 +19,24 @@ Senha: `TrabalhoA3`
 <details>
   <summary><strong>➕ Funcionais</strong></summary>
 
-- Cadastro de produtos (nome, preço, unidade, estoque mínimo/máximo, categoria)  
-- Cadastro de categorias (nome, tamanho, embalagem)  
-- Movimentação de estoque (entrada e saída)  
-- Alertas de estoque (abaixo do mínimo ou acima do máximo)  
-- Reajuste de preços por percentual  
-- Geração de relatórios gerenciais  
-- Interface gráfica para interação
+RF001 - Cadastro de produtos (nome, preço, unidade, estoque mínimo/máximo, categoria)
+RF002 - Cadastro de categorias (nome, tamanho, embalagem)
+RF003 - Movimentação de estoque (entrada e saída)
+RF004 - Alertas automáticos de estoque (abaixo do mínimo ou acima do máximo)
+RF005 - Geração de relatórios e balanços físicos/financeiros
+RF006 - Interface gráfica para interação com o sistema
 </details>
 
 <details>
   <summary><strong>➖ Não Funcionais</strong></summary>
 
-- Uso do padrão DAO  
-- Persistência em MySQL  
-- Boas práticas de codificação  
-- Controle de versão colaborativo  
-- Sistema simples, funcional e documentado  
+RNF001 - Arquitetura distribuída com RMI (Remote Method Invocation)
+RNF002 - Persistência de dados em MySQL
+RNF003 - Separação em camadas 
+RNF004 - Comunicação segura e eficiente entre cliente e servidor
+RNF005 - Boas práticas de codificação e documentação
+RNF006 - Controle de versão colaborativo (ex.: Git)
+RNF007 - Interface gráfica responsiva e amigável ao usuário
 </details>
 
 ---
