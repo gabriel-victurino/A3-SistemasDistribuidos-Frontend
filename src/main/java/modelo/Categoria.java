@@ -1,8 +1,9 @@
 package modelo;
 
+import java.io.Serializable;
 
-
-public class Categoria {
+public class Categoria implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int idCategoria;
     private String nome;
@@ -28,7 +29,7 @@ public class Categoria {
     public void setIdCategoria(int IdCategoria) {
         this.idCategoria = IdCategoria;
     }
-    
+
     public String getNome() {
         return nome;
     }
@@ -36,7 +37,7 @@ public class Categoria {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
+
     public String getTamanho() {
         return tamanho;
     }
@@ -44,7 +45,7 @@ public class Categoria {
     public void setTamanho(String tamanho) {
         this.tamanho = tamanho;
     }
-    
+
     public String getEmbalagem() {
         return embalagem;
     }
