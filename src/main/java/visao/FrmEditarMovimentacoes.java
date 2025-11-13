@@ -1,6 +1,7 @@
 package visao;
 
 import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,42 +43,61 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     }
     
     private void listarMovimentacoes() {
+    try {
+        
         ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
         ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
 
+        
         DefaultTableModel model = (DefaultTableModel) JTableMovimentacoes.getModel();
-        model.setRowCount(0); // Limpa a tabela
+        model.setRowCount(0); 
 
+        
         ArrayList<Movimentacao> lista = servicoMovimentacao.listarMovimentacoes();
 
-        for (Movimentacao mov : lista) {
-            try {
+        
+        if (lista != null) {
+            for (Movimentacao mov : lista) {
                 Produto produto = servicoProduto.buscarPorId(mov.getProdutoId());
                 String nomeProduto = (produto != null) ? produto.getNome() : "Desconhecido";
 
                 model.addRow(new Object[]{
-                mov.getId(),
-                mov.getTipo(),
-                mov.getDataMovimentacao(),
-                mov.getQuantidade(),
-                nomeProduto
-            });
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+                    mov.getId(),
+                    mov.getTipo(),
+                    mov.getDataMovimentacao(),
+                    mov.getQuantidade(),
+                    nomeProduto
+                });
             }
         }
+    } catch (Exception e) {
+        
+        JOptionPane.showMessageDialog(this, "Erro ao listar movimentações: " + e.getMessage());
+        e.printStackTrace();
     }
+}
     
     private void carregarProdutos() {
-        nomeParaIdProduto.clear();
-        JCBproduto.removeAllItems();
+    
+    nomeParaIdProduto.clear();
+    JCBproduto.removeAllItems();
 
-        ProdutoDAO dao = new ProdutoDAO();
-        for (Produto produto : dao.getMinhaLista()) {
-            nomeParaIdProduto.put(produto.getNome(), produto.getId());
-            JCBproduto.addItem(produto.getNome());
+    try {
+       
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+        ArrayList<Produto> produtos = servicoProduto.listarProdutos();
+
+        if (produtos != null) {
+            for (Produto produto : produtos) {
+                nomeParaIdProduto.put(produto.getNome(), produto.getId());
+                JCBproduto.addItem(produto.getNome());
+            }
         }
+    } catch (Exception e) {
+        
+        JOptionPane.showMessageDialog(this, "Erro ao carregar produtos: " + e.getMessage());
     }
+}
     
     private void limparCampos() {
         JCBtipo.setSelectedIndex(0);
@@ -279,87 +299,79 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     }//GEN-LAST:event_JCBprodutoActionPerformed
 
     private void JBapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBapagarActionPerformed
-        int linhaSelecionada = JTableMovimentacoes.getSelectedRow();
+         int linhaSelecionada = JTableMovimentacoes.getSelectedRow();
 
-        if (linhaSelecionada == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma movimentação para apagar.");
-            return;
-        }
+    if (linhaSelecionada == -1) {
+        JOptionPane.showMessageDialog(this, "Selecione uma movimentação para apagar.");
+        return;
+    }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Deseja realmente apagar esta movimentação?", "Confirmação", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) {
-            return;
-        }
+    int confirm = JOptionPane.showConfirmDialog(this, "Deseja realmente apagar esta movimentação?", "Confirmação", JOptionPane.YES_NO_OPTION);
+    if (confirm != JOptionPane.YES_OPTION) {
+        return;
+    }
 
-        // Recupera ID da movimentação
+    try {
+        
         int idMov = (int) JTableMovimentacoes.getValueAt(linhaSelecionada, 0);
 
-        MovimentacaoDAO movDAO = new MovimentacaoDAO();
-        Movimentacao movSelecionada = null;
+       
+        ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
 
-        for (Movimentacao m : movDAO.getMinhaLista()) {
-            if (m.getId() == idMov) {
-                movSelecionada = m;
-                break;
-            }
-        }
-
+        
+        Movimentacao movSelecionada = servicoMovimentacao.buscarPorId(idMov);
         if (movSelecionada == null) {
-            JOptionPane.showMessageDialog(this, "Erro ao localizar movimentação.");
+            JOptionPane.showMessageDialog(this, "Movimentação não encontrada.");
             return;
         }
 
-        try {
-            ProdutoDAO produtoDAO = new ProdutoDAO();
-            Produto produto = produtoDAO.carregaProduto(movSelecionada.getProdutoId());
-
-            if (produto == null) {
-                JOptionPane.showMessageDialog(this, "Produto associado à movimentação não encontrado.");
-                return;
-            }
-
-            int estoqueAtual = produto.getQuantidadeEstoque();
-            int novaQuantidade = estoqueAtual;
-
-            // Ajuste do estoque ao apagar movimentação
-            if (movSelecionada.getTipo().equalsIgnoreCase("Entrada")) {
-                novaQuantidade -= movSelecionada.getQuantidade();
-            } else if (movSelecionada.getTipo().equalsIgnoreCase("Saída")) {
-                novaQuantidade += movSelecionada.getQuantidade();
-            }
-
-            // Impede estoque negativo
-            if (novaQuantidade < 0) {
-                JOptionPane.showMessageDialog(this, "Não é possível apagar essa movimentação pois o estoque ficaria negativo.");
-                return;
-            }
-
-            // Verifica se estoque fica fora dos limites
-            if (novaQuantidade < produto.getQuantidadeMin() || novaQuantidade > produto.getQuantidadeMax()) {
-                String mensagem = "Após apagar esta movimentação, a quantidade em estoque será: " + novaQuantidade +
-                        "\nIsso está fora dos limites definidos (" + produto.getQuantidadeMin() + " - " + produto.getQuantidadeMax() + ").\n" +
-                        "Deseja continuar?";
-
-                int resposta = JOptionPane.showConfirmDialog(this, mensagem, "Estoque fora do limite", JOptionPane.YES_NO_OPTION);
-                if (resposta != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-
-            // Apaga movimentação do banco
-            movDAO.deleteMovimentacaoBD(idMov);
-
-            // Atualiza estoque no banco
-            produto.setQuantidadeEstoque(novaQuantidade);
-            produtoDAO.updateProdutoBD(produto);
-
-            JOptionPane.showMessageDialog(this, "Movimentação apagada e estoque atualizado com sucesso.");
-            listarMovimentacoes(); // Atualiza tabela
-            limparCampos();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao apagar movimentação: " + ex.getMessage());
+        Produto produto = servicoProduto.buscarPorId(movSelecionada.getProdutoId());
+        if (produto == null) {
+            JOptionPane.showMessageDialog(this, "Produto associado à movimentação não encontrado.");
+            return;
         }
+
+        int estoqueAtual = produto.getQuantidadeEstoque();
+        int novaQuantidade = estoqueAtual;
+
+        
+        if (movSelecionada.getTipo().equalsIgnoreCase("Entrada")) {
+            novaQuantidade -= movSelecionada.getQuantidade();
+        } else { 
+            novaQuantidade += movSelecionada.getQuantidade();
+        }
+
+        
+        if (novaQuantidade < 0) {
+            JOptionPane.showMessageDialog(this, "Não é possível apagar essa movimentação pois o estoque ficaria negativo.");
+            return;
+        }
+
+        
+        if (novaQuantidade < produto.getQuantidadeMin() || novaQuantidade > produto.getQuantidadeMax()) {
+            String mensagem = "Após apagar esta movimentação, a quantidade em estoque será: " + novaQuantidade +
+                    "\nIsso está fora dos limites definidos (" + produto.getQuantidadeMin() + " - " + produto.getQuantidadeMax() + ").\n" +
+                    "Deseja continuar?";
+            int resposta = JOptionPane.showConfirmDialog(this, mensagem, "Estoque fora do limite", JOptionPane.YES_NO_OPTION);
+            if (resposta != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
+        
+        servicoMovimentacao.deletarMovimentacao(idMov);
+        produto.setQuantidadeEstoque(novaQuantidade);
+        servicoProduto.atualizarProduto(produto);
+
+        JOptionPane.showMessageDialog(this, "Movimentação apagada e estoque atualizado com sucesso.");
+        listarMovimentacoes();
+        limparCampos();
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao apagar movimentação: " + ex.getMessage());
+    }
     }//GEN-LAST:event_JBapagarActionPerformed
 
     private void JBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBvoltarActionPerformed
@@ -369,101 +381,90 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     private void JBalterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBalterarActionPerformed
         int linhaSelecionada = JTableMovimentacoes.getSelectedRow();
 
-        if (linhaSelecionada == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma movimentação na tabela.");
-            return;
-        }
+    if (linhaSelecionada == -1) {
+        JOptionPane.showMessageDialog(this, "Selecione uma movimentação na tabela.");
+        return;
+    }
 
+    try {
         int idMov = (int) JTableMovimentacoes.getValueAt(linhaSelecionada, 0);
+        String tipoNovo = JCBtipo.getSelectedItem().toString();
+        String dataMov = JTFdataMov.getText();
+        int quantidadeNova = Integer.parseInt(JTFquantidade.getText());
+        String nomeProduto = JTFproduto.getText();
 
-        MovimentacaoDAO movDAO = new MovimentacaoDAO();
-        Movimentacao movAntigo = null;
+        
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+        ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
 
-        for (Movimentacao m : movDAO.getMinhaLista()) {
-            if (m.getId() == idMov) {
-                movAntigo = m;
-                break;
-            }
-        }
-
+        
+        Movimentacao movAntigo = servicoMovimentacao.buscarPorId(idMov);
         if (movAntigo == null) {
-            JOptionPane.showMessageDialog(this, "Erro ao localizar movimentação original.");
+            JOptionPane.showMessageDialog(this, "Movimentação original não encontrada.");
             return;
         }
 
-        try {
-            String tipoNovo = JCBtipo.getSelectedItem().toString();
-            String dataMov = JTFdataMov.getText();
-            int quantidadeNova = Integer.parseInt(JTFquantidade.getText());
+        Produto produto = servicoProduto.buscarPorNome(nomeProduto);
+        if (produto == null) {
+            JOptionPane.showMessageDialog(this, "Produto não encontrado.");
+            return;
+        }
 
-            String nomeProduto = JTFproduto.getText();
-            ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
-            Produto produto = servicoProduto.buscarPorNome(nomeProduto);
+        int estoqueAtual = produto.getQuantidadeEstoque();
 
-            if (produto == null) {
-                JOptionPane.showMessageDialog(this, "Produto não encontrado.");
-                return;
-            }
+        
+        if (movAntigo.getTipo().equalsIgnoreCase("Entrada")) {
+            estoqueAtual -= movAntigo.getQuantidade();
+        } else {
+            estoqueAtual += movAntigo.getQuantidade();
+        }
 
-            // Atualizar movimentação
-            Movimentacao movNova = new Movimentacao();
-            movNova.setId(idMov);
-            movNova.setTipo(tipoNovo);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDateTime dataMovimentacao = LocalDateTime.parse(dataMov, formatter);
-            movNova.setDataMovimentacao(dataMovimentacao);
-            movNova.setQuantidade(quantidadeNova);
-            movNova.setProdutoId(produto.getId());
+        
+        if (tipoNovo.equalsIgnoreCase("Entrada")) {
+            estoqueAtual += quantidadeNova;
+        } else {
+            estoqueAtual -= quantidadeNova;
+        }
 
-            int estoqueAtual = produto.getQuantidadeEstoque();
+        
+        if (estoqueAtual < 0) {
+            JOptionPane.showMessageDialog(this, "Operação inválida: o estoque não pode ficar negativo.");
+            return;
+        }
 
-            // Reverter movimentação antiga
-            if (movAntigo.getTipo().equalsIgnoreCase("Entrada")) {
-                estoqueAtual -= movAntigo.getQuantidade();
-            } else if (movAntigo.getTipo().equalsIgnoreCase("Saída")) {
-                estoqueAtual += movAntigo.getQuantidade();
-            }
-
-            // Aplicar nova movimentação
-            if (tipoNovo.equalsIgnoreCase("Entrada")) {
-                estoqueAtual += quantidadeNova;
-            } else if (tipoNovo.equalsIgnoreCase("Saída")) {
-                estoqueAtual -= quantidadeNova;
-            }
-
-            // ⚠️ Verificação de estoque negativo
-            if (estoqueAtual < 0) {
-                JOptionPane.showMessageDialog(this, "Operação inválida: o estoque não pode ficar negativo.");
-                return;
-            }
-
-            // ⚠️ Verificação de estoque fora da faixa mínima/máxima
-            if (estoqueAtual < produto.getQuantidadeMin() || estoqueAtual > produto.getQuantidadeMax()) {
-                String msgAviso = "A nova quantidade em estoque (" + estoqueAtual + 
+        
+        if (estoqueAtual < produto.getQuantidadeMin() || estoqueAtual > produto.getQuantidadeMax()) {
+            String msgAviso = "A nova quantidade em estoque (" + estoqueAtual +
                     ") está fora dos limites definidos (" + produto.getQuantidadeMin() + " - " + produto.getQuantidadeMax() + ").\n" +
                     "Deseja continuar com a alteração?";
-                int resposta = JOptionPane.showConfirmDialog(this, msgAviso, "Aviso de Estoque Fora do Limite", JOptionPane.YES_NO_OPTION);
-
-                if (resposta != JOptionPane.YES_OPTION) {
-                    return;
-                }
+            int resposta = JOptionPane.showConfirmDialog(this, msgAviso, "Aviso de Estoque Fora do Limite", JOptionPane.YES_NO_OPTION);
+            if (resposta != JOptionPane.YES_OPTION) {
+                return;
             }
-
-            // Atualiza movimentação no banco
-            movDAO.updateMovimentacaoBD(movNova);
-
-            // Atualiza estoque no banco
-            produto.setQuantidadeEstoque(estoqueAtual);
-            servicoProduto.atualizarProduto(produto);
-
-            JOptionPane.showMessageDialog(this, "Movimentação e estoque atualizados com sucesso.");
-            listarMovimentacoes();
-            limparCampos();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + ex.getMessage());
         }
+
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime dataMovimentacao = LocalDateTime.parse(dataMov, formatter);
+
+        
+        Movimentacao movNova = new Movimentacao(idMov, tipoNovo, dataMovimentacao, quantidadeNova, produto.getId());
+
+        
+        servicoMovimentacao.atualizarMovimentacao(movNova);
+        produto.setQuantidadeEstoque(estoqueAtual);
+        servicoProduto.atualizarProduto(produto);
+
+        JOptionPane.showMessageDialog(this, "Movimentação e estoque atualizados com sucesso.");
+        listarMovimentacoes();
+        limparCampos();
+
+    } catch (NumberFormatException nfe) {
+        JOptionPane.showMessageDialog(this, "Quantidade inválida.");
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + ex.getMessage());
+    }
     }//GEN-LAST:event_JBalterarActionPerformed
 
     private void JTableMovimentacoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTableMovimentacoesMouseClicked
