@@ -1,11 +1,18 @@
 package visao;
 
+import cliente.ConexaoRMI;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelo.Categoria;
+import modelo.Produto;
+import servicos.ServicoCategoria;
+import servicos.ServicoProduto;
 
 public class FrmRelacaoCategoriaProduto extends javax.swing.JFrame {
 
@@ -20,24 +27,26 @@ public class FrmRelacaoCategoriaProduto extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0); // Limpa a tabela
         
-        String sql = "SELECT c.nome AS categoria_nome, COUNT(p.id) AS quantidade_produtos " +
-                     "FROM categoria c LEFT JOIN produto p ON c.id = p.categoria_id " +
-                     "GROUP BY c.nome ORDER BY c.nome";
-        
-        try (Connection conn = ConexaoDB.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
-                String categoria = rs.getString("categoria_nome");
-                int quantidade = rs.getInt("quantidade_produtos");
-                model.addRow(new Object[]{categoria, quantidade});
-            }
-            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, 
-                "Erro ao carregar dados: " + ex.getMessage(), 
-                "Erro", JOptionPane.ERROR_MESSAGE);
+        try {
+           // Conecta ao serviço remoto
+           ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+           ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
+           // Obtém todas as categorias
+           ArrayList<Categoria> categorias = servicoCategoria.listarCategorias();
+           
+           for (Categoria categoria : categorias) {
+               // Conta quantos produtos pertecem a esta categoria
+               int contador = 0;
+               for (Produto produto : servicoProduto.listarProdutos()) {
+                   if (produto.getCategoriaId() == categoria.getIdCategoria()) {
+                       contador++;
+                   }
+               }
+               // Adiciona na tabela
+               model.addRow(new Object[]{categoria.getNome(), contador});
+           }
+} catch (RemoteException e) {
+    JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
         }
     }
 
