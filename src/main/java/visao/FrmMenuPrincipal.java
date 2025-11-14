@@ -1,12 +1,10 @@
 package visao;
 
-import cliente.ConexaoRMI;
 
 public class FrmMenuPrincipal extends javax.swing.JFrame {
 
     public FrmMenuPrincipal() {
         initComponents();
-        ConexaoRMI.conectar();
         setLocationRelativeTo(null);
     }
 

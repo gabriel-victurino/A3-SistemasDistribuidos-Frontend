@@ -1,7 +1,6 @@
 package visao;
 
 import cliente.ConexaoRMI;
-import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

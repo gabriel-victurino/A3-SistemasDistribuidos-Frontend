@@ -1,6 +1,5 @@
 package visao;
 
-
 import cliente.ConexaoRMI;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;

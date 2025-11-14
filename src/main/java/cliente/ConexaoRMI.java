@@ -12,17 +12,20 @@ public class ConexaoRMI {
     private static ServicoProduto servicoProduto;
     private static ServicoMovimentacao servicoMovimentacao;
 
-    public static void conectar() {
+    public static boolean conectar() {
         try {
             Registry registro = LocateRegistry.getRegistry("localhost", 1099);
 
             servicoCategoria = (ServicoCategoria) registro.lookup("ServicoCategoria");
             servicoProduto = (ServicoProduto) registro.lookup("ServicoProduto");
             servicoMovimentacao = (ServicoMovimentacao) registro.lookup("ServicoMovimentacao");
+            
+            System.out.println("Conectado ao servidor RMI com sucesso!");
+            return true; // Sucesso ao conectar
 
-            System.out.println("✅ Conectado ao servidor RMI com sucesso!");
         } catch (Exception e) {
-            System.err.println("❌ Erro ao conectar ao servidor RMI: " + e.getMessage());
+            System.err.println("Erro ao conectar ao servidor RMI: " + e.getMessage());
+            return false; // Falha ao conectar ao servidor RMI
         }
     }
 

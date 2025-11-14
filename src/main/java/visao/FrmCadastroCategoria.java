@@ -1,7 +1,6 @@
 package visao;
 
 import javax.swing.JOptionPane;
-import java.awt.HeadlessException;
 import modelo.Categoria;
 import cliente.ConexaoRMI;
 import java.rmi.RemoteException;
@@ -151,8 +150,8 @@ public class FrmCadastroCategoria extends javax.swing.JFrame {
 
             try {
                 // Salva no banco de dados
-                ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
-                servicocategoria.inserirCategoria(categoria);
+                ServicoCategoria servicoCategoria = ConexaoRMI.getServicoCategoria();
+                servicoCategoria.inserirCategoria(categoria);
                 JOptionPane.showMessageDialog(this, "Categoria cadastrada com sucesso!");
 
                 // Limpa campos após cadastro

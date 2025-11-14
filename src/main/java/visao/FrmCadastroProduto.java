@@ -1,6 +1,6 @@
 package visao;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import modelo.Categoria;
 import modelo.Produto;
