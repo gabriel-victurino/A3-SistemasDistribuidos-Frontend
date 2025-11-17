@@ -298,50 +298,72 @@ public class FrmEditarProduto extends javax.swing.JFrame {
 
     private void JBapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBapagarActionPerformed
         int selectedRow = JTableProdutos.getSelectedRow();
-        if (selectedRow != -1) {
-            int idProduto = Integer.parseInt(JTableProdutos.getValueAt(selectedRow, 0).toString());
 
-            try {
-                ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
-                boolean possuiMov = servicoMovimentacao.deletarMovimentacao(idProduto);
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Selecione um produto para apagar.",
+                "Aviso",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
 
-                int confirm;
+    int idProduto = Integer.parseInt(JTableProdutos.getValueAt(selectedRow, 0).toString());
 
-                if (possuiMov) {
-                    confirm = JOptionPane.showConfirmDialog(this,
-                            "Este produto está associado a movimentações.\nDeseja apagar o produto e todas as movimentações relacionadas?",
-                            "Confirmar exclusão em cascata",
-                            JOptionPane.YES_NO_OPTION);
-                } else {
-                    confirm = JOptionPane.showConfirmDialog(this,
-                            "Tem certeza que deseja apagar este produto?",
-                            "Confirmar exclusão",
-                            JOptionPane.YES_NO_OPTION);
-                }
+    try {
+        ServicoMovimentacao servicoMovimentacao = ConexaoRMI.getServicoMovimentacao();
+        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
 
-                if (confirm == JOptionPane.YES_OPTION) {
-                    if (possuiMov) {
-                        servicoMovimentacao.deletarMovimentacao(idProduto);
+        // Usa o método existente no servidor para verificar movimentações
+        boolean possuiMov = servicoMovimentacao.deletarMovimentacao(idProduto);
 
-                        ServicoProduto servicoProduto = ConexaoRMI.getServicoProduto();
-                        boolean sucesso = servicoProduto.deletarProduto(idProduto);
+        int confirm;
 
-                        if (sucesso) {
-                            JOptionPane.showMessageDialog(this, "Produto apagado com sucesso"
-                                    + (possuiMov ? " (e movimentações relacionadas)." : "."));
-                            carregarTabelaProdutos();
-                            limparCampos();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Erro ao apagar o produto.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Selecione um produto para apagar.");
-                    }
-                }
-            } catch (RemoteException e) {
-                JOptionPane.showMessageDialog(this, "Erro ao deletar movimentacao" + e.getMessage());
-            }
+        if (possuiMov) {
+            confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Este produto possui movimentações relacionadas.\n" +
+                    "Deseja apagar o produto e TODAS as movimentações relacionadas?",
+                    "Excluir em cascata",
+                    JOptionPane.YES_NO_OPTION
+            );
+        } else {
+            confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Tem certeza que deseja apagar este produto?",
+                    "Confirmar exclusão",
+                    JOptionPane.YES_NO_OPTION
+            );
         }
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Se possui movimentações, apaga de fato
+        if (possuiMov) {
+            servicoMovimentacao.deletarMovimentacao(idProduto);
+        }
+
+        boolean sucesso = servicoProduto.deletarProduto(idProduto);
+
+        if (sucesso) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Produto apagado com sucesso" +
+                    (possuiMov ? " (incluindo movimentações)." : ".")
+            );
+            carregarTabelaProdutos();
+            limparCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao apagar o produto.");
+        }
+
+    } catch (RemoteException e) {
+        JOptionPane.showMessageDialog(this, "Erro ao deletar produto: " + e.getMessage());
+    }
+
     }//GEN-LAST:event_JBapagarActionPerformed
 
     private void JBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBvoltarActionPerformed
