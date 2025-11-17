@@ -20,6 +20,7 @@ public class FrmEditarMovimentacoes extends javax.swing.JFrame {
     
     public FrmEditarMovimentacoes() {
         initComponents();
+        // Centraliza o JFrame no meio da tela
         setLocationRelativeTo(null);
         carregarProdutos();
         listarMovimentacoes();

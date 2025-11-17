@@ -13,6 +13,7 @@ public class FrmProdutosAbaixoQtdMin extends javax.swing.JFrame {
 
     public FrmProdutosAbaixoQtdMin() {
         initComponents();
+        // Centraliza o JFrame no meio da tela.
         setLocationRelativeTo(null);
         servicoProduto = ConexaoRMI.getServicoProduto();
         carregarProdutosAbaixoMinimo();

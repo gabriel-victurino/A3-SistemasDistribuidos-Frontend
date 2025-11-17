@@ -12,10 +12,12 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
 
     public FrmEditarCategoria() {
         initComponents();
+        // Centraliza o JFrame no meio da tela.
         setLocationRelativeTo(null);
         listarCategorias();
     }
 
+    // Lista as categorias
     private void listarCategorias() {
         try {
             DefaultTableModel modelo = (DefaultTableModel) JTableCategorias.getModel();
@@ -193,58 +195,60 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_JBvoltarActionPerformed
 
     private void JBapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBapagarActionPerformed
+        // Puxa a linha selecionada pelo usuário
         int linhaSelecionada = JTableCategorias.getSelectedRow();
 
-    if (linhaSelecionada == -1) {
-        JOptionPane.showMessageDialog(this, "Selecione uma categoria para apagar.");
-        return;
-    }
-
-    int confirmacao = JOptionPane.showConfirmDialog(this,
-            "Tem certeza que deseja apagar essa categoria?",
-            "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
-
-    if (confirmacao == JOptionPane.YES_OPTION) {
-        try {
-            int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
-            ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
-
-            // Verifica se há produtos associados
-            int qtdProdutos = servicocategoria.contarProdutosNaCategoria(idCategoria);
-
-            if (qtdProdutos > 0) {
-                JOptionPane.showMessageDialog(this,
-                        "Não é possível apagar esta categoria!\n"
-                        + "Existem " + qtdProdutos + " produtos cadastrados nela.",
-                        "Erro",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Caso não tenha produtos → pode apagar
-            boolean sucesso = servicocategoria.deletarCategoria(idCategoria);
-
-            if (sucesso) {
-                JOptionPane.showMessageDialog(this, "Categoria removida com sucesso!");
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "Erro ao apagar categoria.",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-
-            listarCategorias();
-            limparCampos();
-
-        } catch (RemoteException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao comunicar com o servidor: " + e.getMessage());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao apagar categoria: " + e.getMessage());
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma categoria para apagar.");
+            return;
         }
-    }
+
+        int confirmacao = JOptionPane.showConfirmDialog(this,
+                "Tem certeza que deseja apagar essa categoria?",
+                "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            try {
+                int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
+                ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
+
+                // Verifica se há produtos associados
+                int qtdProdutos = servicocategoria.contarProdutosNaCategoria(idCategoria);
+
+                if (qtdProdutos > 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "Não é possível apagar esta categoria!\n"
+                            + "Existem " + qtdProdutos + " produtos cadastrados nela.",
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Caso não tenha produtos → pode apagar
+                boolean sucesso = servicocategoria.deletarCategoria(idCategoria);
+
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(this, "Categoria removida com sucesso!");
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Erro ao apagar categoria.",
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                listarCategorias();
+                limparCampos();
+
+            } catch (RemoteException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao comunicar com o servidor: " + e.getMessage());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro ao apagar categoria: " + e.getMessage());
+            }
+        }
     }//GEN-LAST:event_JBapagarActionPerformed
 
     private void JBalterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBalterarActionPerformed
+        // Puxa a linha selecionada pelo usuário
         int linhaSelecionada = JTableCategorias.getSelectedRow();
 
         if (linhaSelecionada == -1) {

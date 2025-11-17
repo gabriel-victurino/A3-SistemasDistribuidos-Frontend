@@ -5,6 +5,7 @@ public class FrmMenuPrincipal extends javax.swing.JFrame {
 
     public FrmMenuPrincipal() {
         initComponents();
+        // Centraliza o JFrame no meio da tela.
         setLocationRelativeTo(null);
     }
 

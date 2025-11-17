@@ -17,7 +17,7 @@ public class Principal {
             System.exit(0);
         }
 
-        // Conectou → abre o menu
+        // Conectou = abre o menu
         java.awt.EventQueue.invokeLater(() -> {
             new FrmMenuPrincipal().setVisible(true);
         });

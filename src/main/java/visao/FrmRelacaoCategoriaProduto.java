@@ -14,9 +14,9 @@ public class FrmRelacaoCategoriaProduto extends javax.swing.JFrame {
 
     public FrmRelacaoCategoriaProduto() {
         initComponents();
+        // Centraliza o JFrame no meio da tela
         setLocationRelativeTo(null);
         carregarDados();
-        setLocationRelativeTo(null); // Centraliza a janela
     }
 
     private void carregarDados() {
@@ -57,6 +57,7 @@ public class FrmRelacaoCategoriaProduto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Relação Categoria/Produto");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

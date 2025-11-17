@@ -15,6 +15,7 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
 
     public FrmMovimentacoes() {
         initComponents();
+        // Centraliza o JFrame no meio da tela
         setLocationRelativeTo(null);
         carregarProdutos();
         
@@ -159,7 +160,7 @@ public class FrmMovimentacoes extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(37, 37, 37)
                                 .addComponent(JBmovimentar)
-                                .addGap(153, 159, Short.MAX_VALUE))
+                                .addGap(153, 217, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4)

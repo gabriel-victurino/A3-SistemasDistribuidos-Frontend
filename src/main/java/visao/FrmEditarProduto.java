@@ -15,6 +15,7 @@ public class FrmEditarProduto extends javax.swing.JFrame {
 
     public FrmEditarProduto() {
         initComponents();
+        // Centraliza o JFrame no meio da tela
         setLocationRelativeTo(null);
         carregarTabelaProdutos();
         carregarCategorias();

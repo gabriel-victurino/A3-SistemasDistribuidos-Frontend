@@ -13,6 +13,7 @@ public class FrmProdutosAcimaQtdMax extends javax.swing.JFrame {
 
     public FrmProdutosAcimaQtdMax() {
         initComponents();
+        // Centraliza o JFrame no meio da tela
         setLocationRelativeTo(null);
         servicoProduto = ConexaoRMI.getServicoProduto();
         carregarProdutosAcimaMaximo();
@@ -64,6 +65,7 @@ public class FrmProdutosAcimaQtdMax extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Produtos Acima da Quantidade Máxima");
 
         JBatualizar.setText("Atualizar");
         JBatualizar.addActionListener(new java.awt.event.ActionListener() {

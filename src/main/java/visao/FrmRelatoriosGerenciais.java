@@ -6,6 +6,7 @@ public class FrmRelatoriosGerenciais extends javax.swing.JFrame {
 
     public FrmRelatoriosGerenciais() {
         initComponents();
+        // Centraliza o JFrame no meio da tela.
         setLocationRelativeTo(null);
     }
 

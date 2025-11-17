@@ -12,9 +12,9 @@ public class FrmListaDePreços extends javax.swing.JFrame {
 
     public FrmListaDePreços() {
         initComponents();
+        // Centraliza o JFrame no meio da tela.
         setLocationRelativeTo(null);
         carregarProdutos();
-        setLocationRelativeTo(null); 
     }
 
     private void carregarProdutos() {        
