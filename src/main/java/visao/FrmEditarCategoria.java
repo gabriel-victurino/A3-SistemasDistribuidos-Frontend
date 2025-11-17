@@ -195,33 +195,53 @@ public class FrmEditarCategoria extends javax.swing.JFrame {
     private void JBapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBapagarActionPerformed
         int linhaSelecionada = JTableCategorias.getSelectedRow();
 
-        if (linhaSelecionada == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma categoria para apagar.");
-            return;
-        }
+    if (linhaSelecionada == -1) {
+        JOptionPane.showMessageDialog(this, "Selecione uma categoria para apagar.");
+        return;
+    }
 
-        int confirmacao = JOptionPane.showConfirmDialog(this,
-                "Tem certeza que deseja apagar essa categoria?\n"
-                + "Todos os produtos associados serão movidos para a categoria 'Sem Categoria'.",
-                "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
+    int confirmacao = JOptionPane.showConfirmDialog(this,
+            "Tem certeza que deseja apagar essa categoria?",
+            "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
 
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            try {
-                int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
+    if (confirmacao == JOptionPane.YES_OPTION) {
+        try {
+            int idCategoria = Integer.parseInt(JTableCategorias.getValueAt(linhaSelecionada, 0).toString());
+            ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
 
-                ServicoCategoria servicocategoria = ConexaoRMI.getServicoCategoria();
-                servicocategoria.deletarCategoria(idCategoria);
+            // Verifica se há produtos associados
+            int qtdProdutos = servicocategoria.contarProdutosNaCategoria(idCategoria);
 
-                JOptionPane.showMessageDialog(this, "Categoria removida com sucesso! Produtos foram movidos para 'Sem Categoria'.");
-
-                listarCategorias();
-                limparCampos();
-            } catch (RemoteException e) {
-                JOptionPane.showMessageDialog(this, "Erro ao comunicar com o servidor: " + e.getMessage());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Erro ao apagar categoria: " + e.getMessage());
+            if (qtdProdutos > 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Não é possível apagar esta categoria!\n"
+                        + "Existem " + qtdProdutos + " produtos cadastrados nela.",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            // Caso não tenha produtos → pode apagar
+            boolean sucesso = servicocategoria.deletarCategoria(idCategoria);
+
+            if (sucesso) {
+                JOptionPane.showMessageDialog(this, "Categoria removida com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Erro ao apagar categoria.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+
+            listarCategorias();
+            limparCampos();
+
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao comunicar com o servidor: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao apagar categoria: " + e.getMessage());
         }
+    }
     }//GEN-LAST:event_JBapagarActionPerformed
 
     private void JBalterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBalterarActionPerformed
