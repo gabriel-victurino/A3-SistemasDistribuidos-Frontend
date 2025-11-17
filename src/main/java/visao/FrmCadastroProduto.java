@@ -55,6 +55,52 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
         JCBcategoria.setSelectedIndex(0);
     }
 
+    private boolean validarNomeProduto() {
+    if (JTFnome.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+                "O nome do produto é obrigatório!",
+                "Erro",
+                JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+    return true;
+}
+    
+    private boolean validarCampos() {
+
+    if (JTFnome.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe o nome do produto!");
+        return false;
+    }
+
+    if (JTFprecoUnitario.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe o preço unitário!");
+        return false;
+    }
+
+    if (JTFunidade.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe a unidade!");
+        return false;
+    }
+
+    if (JTFquantidadeEstoque.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe a quantidade em estoque!");
+        return false;
+    }
+
+    if (JTFquantidadeMinEstoque.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe a quantidade mínima!");
+        return false;
+    }
+
+    if (JTFquantidadeMaxEstoque.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Informe a quantidade máxima!");
+        return false;
+    }
+
+    return true;
+}
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -214,6 +260,10 @@ public class FrmCadastroProduto extends javax.swing.JFrame {
 
     private void JBcadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBcadastrarActionPerformed
         try {
+             if (!validarCampos()) {
+            return;
+        }
+
             String nome = JTFnome.getText().trim();
             double precoUnitario = Double.parseDouble(JTFprecoUnitario.getText());
             String unidade = JTFunidade.getText().trim();
